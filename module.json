@@ -1,0 +1,14 @@
+{
+  "name": "autocomplete-whisper",
+  "title": "Autocomplete Whisper",
+  "description": "Help chat users whisper quickly by detecting the begining of a typed whisper, and providing an autocomplete suggestion as well as a popup menu of available whisper targets, filtered as they type.",
+  "author": "orcnog",
+  "version": "1.0.0",
+  "minimumCoreVersion": "0.6.2",
+  "scripts": [
+	  "scripts/autocomplete-whisper.js"	
+  ],
+  "styles": [
+    "styles/autocomplete-whisper.css"
+  ]
+}

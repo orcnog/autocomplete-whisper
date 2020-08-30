@@ -1,0 +1,13 @@
+.chatghosttextarea {
+  position: absolute;
+  top: 0;
+  left: 0px;
+  z-index: 1;
+  opacity: 0.5;
+  box-shadow: none;
+  outline: none;
+  pointer-events: none;
+}
+.chatghosttextarea:not(.show) {
+	display: none;
+}
