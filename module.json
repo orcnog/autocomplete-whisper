@@ -1,7 +1,7 @@
 {
   "name": "autocomplete-whisper",
   "title": "Autocomplete Whisper",
-  "description": "Whisper quicker with typeahead autocomplete suggestions and a popup menu of whisper targets.",
+  "description": "Whisper quicker with autocomplete typeahead suggestions and a popup menu of whisper targets.",
   "author": "orcnog",
   "version": "1.0.0",
   "minimumCoreVersion": "0.6.2",
