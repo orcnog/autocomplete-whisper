@@ -3,7 +3,7 @@
   "title": "Autocomplete Whisper",
   "description": "Whisper quicker with autocomplete typeahead suggestions and a popup menu of whisper targets.",
   "author": "orcnog",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "minimumCoreVersion": "0.6.2",
   "scripts": [
 	  "scripts/autocomplete-whisper.js"	
