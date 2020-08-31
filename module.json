@@ -10,5 +10,7 @@
   ],
   "styles": [
     "styles/autocomplete-whisper.css"
-  ]
+  ],
+  "manifest": "https://raw.githubusercontent.com/orcnog/autocomplete-whisper/master/module.json",
+  "url": "https://github.com/orcnog/autocomplete-whisper/"
 }
