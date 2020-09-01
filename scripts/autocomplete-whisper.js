@@ -21,13 +21,13 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   // new RegExp(/^(@|\/w(?:hisper)?\s{1})(\[(?:[^\]]+)\]|(?:[^\s]+))\s+([^]*)/, 'i');
   //
   // Note: the Regex pattern below uses a Positive Lookbehind, (?<=\[), which may not be supported in obscure or old browsers.
-  const whisperPattern = new RegExp(/^(@(?!\s)(?:\[\s*)?|\/w(?:hisper)?\s{1}(?:\[\s*)?)((?<=\[)(?:\s*[^,\]]+,\s*)+)?/, "i");
+  const whisperPattern = new RegExp(/^(@(?!\s)(?:\[)?|\/w(?:hisper)?\s{1}(?:\[)?)((?<=\[)\s*(?:\s*[^,\]]+,\s*)*)?/, "i");
   // when the above regex pattern is used in a split(), define the parts' by array index...
   const whisperSyntaxIndex = 1;
   const targetsInArrayIndex = 2;
 
   // match if the input represents a list (array) of targets
-  const listOfNamesRegex = new RegExp(/^(@(?!\s)\[\s*|\/w(?:hisper)?\s{1}\[\s*)((?:[^,\]]+,\s*)+)/, "i");
+  const listOfNamesRegex = new RegExp(/^(@(?!\s)\[|\/w(?:hisper)?\s{1}\[)((?:\s*[^,\]]+,\s*)+)/, "i");
 
   // some string constants
   const PLAYERS = "Players";
