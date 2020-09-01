@@ -7,7 +7,6 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   // It must match any of the following examples:
   //
   // '@' or '/w ' or '/whisper ' or '/wHiSpEr ' (case-insensitive)
-  // '   @  ' or ' /w     ' etc. (the above syntax proceeded and/or followed by one or more spaces)
   //
   // Note: i'm using '@' to represent any of the above syntaxes (like '/w') from here on in this comment.
   // '@[' (match the start of an Arrays of targets)
@@ -22,13 +21,13 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   // new RegExp(/^(@|\/w(?:hisper)?\s{1})(\[(?:[^\]]+)\]|(?:[^\s]+))\s+([^]*)/, 'i');
   //
   // Note: the Regex pattern below uses a Positive Lookbehind, (?<=\[), which may not be supported in obscure or old browsers.
-  const whisperPattern = new RegExp(/^(\s*@\s*\[?\s*|\s*\/w(?:hisper)?\s+\[?\s*)((?<=\[)[^\]]*,\s*)?/, "i");
+  const whisperPattern = new RegExp(/^(@(?!\s)(?:\[\s*)?|\/w(?:hisper)?\s{1}(?:\[\s*)?)((?<=\[)(?:\s*[^,\]]+,\s*)+)?/, "i");
   // when the above regex pattern is used in a split(), define the parts' by array index...
   const whisperSyntaxIndex = 1;
   const targetsInArrayIndex = 2;
 
-  // match if the input (after the initial whispeer syntax) is a list of targets
-  const listOfNamesRegex = new RegExp(/^(\s*@\s*\[\s*|\s*\/w(?:hisper)?\s+\[\s*)[^\]]*,\s*/, "i");
+  // match if the input represents a list (array) of targets
+  const listOfNamesRegex = new RegExp(/^(@(?!\s)\[\s*|\/w(?:hisper)?\s{1}\[\s*)((?:[^,\]]+,\s*)+)/, "i");
 
   // some string constants
   const PLAYERS = "Players";
