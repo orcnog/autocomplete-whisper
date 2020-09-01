@@ -1,4 +1,8 @@
-.chatghosttextarea {
+#chat-form {
+	position: relative;
+}
+
+#chat-form .chatghosttextarea {
   position: absolute;
   top: 0;
   left: 0px;
@@ -7,6 +11,7 @@
   box-shadow: none;
   outline: none;
   pointer-events: none;
+  background: transparent;
 }
 .chatghosttextarea:not(.show) {
 	display: none;
