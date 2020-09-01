@@ -14,6 +14,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   // '@[someName,' (an array with any name(s) followed by a comma)
   //
   // BUT NOT!...
+  // '@ ' (an @ symbol can't be followed immediately by a space, whereas a '/w' must.)
   // '@someName ' or '@someName,' or '@someName, ' (stop matching after a non-array whisper target is complete)
   // '@[someName, otherName] hello,' (stop matching if whisper target is complete)
   //
