@@ -11,7 +11,7 @@
       "styles/autocomplete-whisper.css"
     ],
     "manifest": "https://raw.githubusercontent.com/orcnog/autocomplete-whisper/master/module.json",
-    "download": "https://github.com/orcnog/autocomplete-whisper/raw/master/autocomplete-whisper.zip",
+    "download": "https://github.com/orcnog/autocomplete-whisper/raw/master/autocomplete-whisper.0.1.0.zip",
     "url": "https://github.com/orcnog/autocomplete-whisper/",
     "minimumCoreVersion": "0.6.6",
     "compatibleCoreVersion": "0.7.1"
