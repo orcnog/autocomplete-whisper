@@ -22,13 +22,13 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   // new RegExp(/^(@|\/w(?:hisper)?\s{1})(\[(?:[^\]]+)\]|(?:[^\s]+))\s+([^]*)/, 'i');
   //
   // Note: the Regex pattern below uses a Positive Lookbehind, (?<=\[), which may not be supported in obscure or old browsers.
-  const whisperPattern = new RegExp(/^(@(?!\s)(?:\[)?|\/w(?:hisper)?\s{1}(?:\[)?)((?<=\[)\s*(?:\s*[^,\]]+,\s*)*)?/, "i");
+  const whisperPattern = new RegExp(/^(@(?!\s)(?:\[)?|\/w(?:hisper)?\s{1}(?:\[)?)((?<=\[)\s*(?:\s*[^,\]]+,\s*)*)?(?!.*\])/, "i");
   // when the above regex pattern is used in a split(), define the parts' by array index...
   const whisperSyntaxIndex = 1;
   const targetsInArrayIndex = 2;
 
   // match if the input represents a list (array) of targets
-  const listOfNamesRegex = new RegExp(/^(@(?!\s)\[|\/w(?:hisper)?\s{1}\[)((?:\s*[^,\]]+,\s*)+)/, "i");
+  const listOfNamesRegex = new RegExp(/^(@(?!\s)\[|\/w(?:hisper)?\s{1}\[)((?:\s*[^,\]]+,\s*)+)(?!.*\])/, "i");
 
   // some string constants
   const PLAYERS = "Players";
@@ -100,13 +100,12 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   }
 
   function listFinishHandler(e) {
-    if (e.which == 221) {
-      // `]`
+    if (e.which == 221) { // `]`
       let val = $("#chat-message").val();
       if (val.match(listOfNamesRegex)) {
         if (typeof e === "object") e.preventDefault();
         val = val.trim();
-        const newval = val.substring(0, val.length - 1); // remove `,` from the end
+        const newval = val.substring(val.length - 1) === "," ? val.substring(0, val.length - 1) : val; // remove `,` from the end
         $("#chat-message").val(newval + "] ");
         closeWhisperMenu();
       }
@@ -147,8 +146,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
       $(".chatghosttextarea").val(autocompleteText.ghost);
       $(".chatghosttextarea").addClass("show");
       $("#chat-message").on("keydown.ghosttab", (e) => {
-        if (e.which == 9) {
-          // tab
+        if (e.which == 9) { // tab
           e.preventDefault();
           $("#chat-message").val(autocompleteText.overwrite);
           resetGhostText();
