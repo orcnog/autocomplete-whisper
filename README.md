@@ -8,3 +8,11 @@ Foundry VTT module to enhance chat whisper targeting with typeahead suggestions 
 
 ### Demo
 [![Demo of autocomplete-whisper module](demo.gif)](https://youtu.be/gMwCbr0dBUY)
+
+### Release Notes
+
+#### v0.1.0
+Original release. Module approved!
+
+#### v0.1.1
+Fixes issue #12 - post-whisper ']' brackets triggering unwanted keydown handler
