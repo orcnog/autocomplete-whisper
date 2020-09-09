@@ -3,6 +3,9 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
     return;
   }
 
+  // settings
+  const includeGMNamesInList = false;
+
   // This is the all-important whisper syntax matcher.
   // It must match any of the following examples:
   //
@@ -32,7 +35,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
 
   // some string constants
   const PLAYERS = "Players";
-  const GM = "GM";
+  const GM = ["GM", "DM"];
 
   /* Set up markup for our UI to be injected */
   const $whisperMenuContainer = $('<div id="whisper-menu"></div>');
@@ -57,10 +60,10 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
       // console.log(splt);
       let input = splt[splt.length - 1]; // newly typed input
       let alreadyTargeted = getAlreadyTargeted(splt[targetsInArrayIndex]);
-      const activePlayers = game.users.entities.filter(p => p.role !== 4 && p.name);
+      const activePlayers = game.users.entities.filter(p => (includeGMNamesInList || !p.isGM) && p.name);
       let whisperablePlayers = activePlayers.map((p) => p.name);
       whisperablePlayers.push(PLAYERS);
-      whisperablePlayers.push(GM);
+      whisperablePlayers.push(GM[0]);
       let matchingPlayers = whisperablePlayers.filter((target) => {
         const p = target.toUpperCase();
         const i = input.toUpperCase();
@@ -126,11 +129,20 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   function getAlreadyTargeted(names) {
     let arr = [];
     if (typeof names !== "undefined") {
-      // remove all spaces, capitalize, and split by commas, then remove the last blank item
-      arr = names.replace(/\s/g, "").toUpperCase().split(",");
+      // split by commas, then remove the last blank item
+      arr = names.toUpperCase().split(",");
       arr.pop();
+      arr = arr.map(n => n.trim());
+      if (arr.indexOf(PLAYERS.toUpperCase()) >= 0) {
+        let allPlayers = game.users.entities.filter(u => !u.isGM).map((p) => p.name.toUpperCase());
+        arr = arr.concat(allPlayers);
+      }
+      if (arr.indexOf(GM[0].toUpperCase()) >= 0 || arr.indexOf(GM[1].toUpperCase()) >= 0) {
+        let allGMs = game.users.entities.filter(u => u.isGM).map((p) => p.name.toUpperCase());
+        arr = arr.concat(allGMs, GM);
+      }
+      // console.log(arr);
     }
-    // console.log(arr);
     return arr;
   }
 
@@ -179,7 +191,8 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
     // add a `, ` if this is an array of targets
     let charactersAfter = isArrayOfTargets ? ", " : " ";
     const ghostString = startingSyntax + targetsAlreadyInArray + nameToAdd + charactersAfter;
-    // interesting quirk: if the whisper target has a space in it, the whisper syntax only works if the target name is wrapped in [].
+    // interesting quirk: if the whisper target has a space in it, the whisper syntax only works if the target nam
+    // is wrapped in []. *shrug* makes sense.
     if (nameToAdd.indexOf(" ") > -1 && !isArrayOfTargets) {
       startingSyntax += "[";
       charactersAfter = "] "; // go ahead and close the array now, since the user probably only intended one target.
