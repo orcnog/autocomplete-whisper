@@ -43,19 +43,21 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   let $whisperMenu = $('<nav id="context-menu" class="expand-up"><ol class="context-items"></ol></nav>');
 
   /* Add our UI to the DOM */
+  $("#chat-message").before($whisperMenuContainer);
   $("#chat-message").after($ghostTextarea);
-  $("#chat-message").after($whisperMenuContainer);
   /* Listen for chat input. Do stuff.*/
   $("#chat-message").on("input.whisperer", handleChatInput);
   /* Listen for "]" to close an array of targets (names) */
   $("#chat-message").on("keydown.closearray", listFinishHandler);
   /* Listen for click on a menu item */
-  $("#whisper-menu").on("click", "li", menuItemClickHandler);
+  $("#whisper-menu").on("click", "li", menuItemSelectionHandler);
 
   function handleChatInput() {
     resetGhostText();
     const val = $("#chat-message").val();
     if (val.match(whisperPattern)) {
+
+      // It's a whisper! Show a menu of whisper targets and typeahead text if possible
       let splt = val.split(whisperPattern);
       // console.log(splt);
       let input = splt[splt.length - 1]; // newly typed input
@@ -70,10 +72,12 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
         return p.indexOf(i) >= 0 && p !== i && !alreadyTargeted.includes(p);
       });
       if (matchingPlayers.length > 0) {
-        let listOfPlayers = "";
+
+        // At least one potential target exists.
         // show ghost text to autocomplete if there's a match starting with the characters already typed
         ghostText(input, matchingPlayers);
         // set up and display the menu of whisperable names
+        let listOfPlayers = "";
         for (let p in matchingPlayers) {
           if (isNaN(p)) continue;
           const name = matchingPlayers[p];
@@ -82,7 +86,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
           if (input && startIndex > -1) {
             nameHtml = name.substr(0, startIndex) + "<strong>" + name.substr(startIndex, input.length) + "</strong>" + name.substr(startIndex + input.length);
           }
-          listOfPlayers += `<li class="context-item" data-name="${name}"><i class="fas fa-male fa-fw"></i>${nameHtml}</li>`;
+          listOfPlayers += `<li class="context-item" data-name="${name}" tabIndex="0"><i class="fas fa-male fa-fw"></i>${nameHtml}</li>`;
         }
         $whisperMenu.find("ol").html(listOfPlayers);
         $("#whisper-menu").html($whisperMenu);
@@ -92,6 +96,41 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
           var $target = $(e.target);
           if (!$target.closest("#whisper-menu").length) {
             closeWhisperMenu();
+          }
+        });
+           
+        // set up up/down arrow handlers to allow user to focus and select menu items
+        $(window).on("keydown.menufocus", (e) => {
+          if (e.which === 38) { // `up`
+            if($(e.target).is("#chat-message")) {
+              $("#whisper-menu li:last-child").focus();
+              return false;
+            } else if ($(e.target).is("#whisper-menu li")) {
+              if ($(e.target).is(":first-child")) {
+                $("#chat-message").focus();
+              } else {
+                $(e.target).prev().focus();
+              }
+              return false;
+            }
+          } else if (e.which === 40) { // `down`
+            if($(e.target).is("#chat-message")) {
+              $("#whisper-menu li:first-child").focus();
+              return false;
+            }
+            if($(e.target).is("#whisper-menu li")) {
+              if ($(e.target).is(":last-child")) {
+                $("#chat-message").focus();
+              } else {
+                $(e.target).next().focus();
+              }
+              return false;
+            }
+          } else if (e.which === 13) { // `enter`
+            if($(e.target).is("#whisper-menu li")) {
+              menuItemSelectionHandler(e);
+              return false;
+            }
           }
         });
       } else {
@@ -115,9 +154,9 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
     }
   }
 
-  function menuItemClickHandler(e) {
+  function menuItemSelectionHandler(e) {
     e.stopPropagation();
-    var autocompleteText = autocomplete($(this).text());
+    var autocompleteText = autocomplete($(e.target).text());
     $("#chat-message").val(autocompleteText.overwrite);
     $("#chat-message").focus();
     closeWhisperMenu();
@@ -207,6 +246,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   function closeWhisperMenu() {
     $("#whisper-menu").empty();
     $(window).off("click.outsidewhispermenu");
+    $(window).off("keydown.menufocus");
     resetGhostText();
   }
 

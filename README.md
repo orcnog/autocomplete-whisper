@@ -7,7 +7,7 @@ Foundry VTT module to enhance chat whisper targeting with typeahead suggestions 
 * Supports group whisper syntaxes: "@\[target1, target2\]", "/w \[target1, target2\]" etc.
 
 ### Demo
-[![Demo of autocomplete-whisper module](demo.gif)](https://youtu.be/gMwCbr0dBUY)
+![Demo of autocomplete-whisper module](demo.gif)
 
 ### Release Notes
 
@@ -18,5 +18,6 @@ Original release. Module approved!
 Fixes issue #12 - post-whisper ']' brackets triggering unwanted keydown handler
 
 #### v0.1.2
-* Fixes issue #11 - player name with space(s) in it not being removed from context menu after it is chosen.
+Fixes issue #11, if "Players" targeted in array the menu now hides all indiv players
+* This fixes issue #11 - player name with space(s) in it not being removed from context menu after it is chosen.
 * Also aims to add intelligent feature to remove all player targets if "Players" was already targeted in the array, and same for GM targets if "GM" or "DM" was already targeted. It's edge-casey, but it felt weird targeting "Players" and then having this script offer up everyone's name still as a possible target.
