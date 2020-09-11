@@ -42,6 +42,11 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   const $ghostTextarea = $('<textarea class="chatghosttextarea" autocomplete="off" readonly disabled></textarea>');
   let $whisperMenu = $('<nav id="context-menu" class="expand-up"><ol class="context-items"></ol></nav>');
 
+
+  /* Rebind original FVTT chat textarea keydown handler with namespace */
+  $("#chat-message").off("keydown");
+  $("#chat-message").on("keydown.original", ui.chat._onChatKeyDown.bind(ui.chat));
+
   /* Add our UI to the DOM */
   $("#chat-message").before($whisperMenuContainer);
   $("#chat-message").after($ghostTextarea);
@@ -49,6 +54,8 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   $("#chat-message").on("input.whisperer", handleChatInput);
   /* Listen for "]" to close an array of targets (names) */
   $("#chat-message").on("keydown.closearray", listFinishHandler);
+  /* Listen for up/down arrow presses to navigate exposed menu */
+  $("#whisper-menu").on("keydown.menufocus", menuNavigationHandler);
   /* Listen for click on a menu item */
   $("#whisper-menu").on("click", "li", menuItemSelectionHandler);
 
@@ -100,37 +107,14 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
         });
            
         // set up up/down arrow handlers to allow user to focus and select menu items
-        $(window).on("keydown.menufocus", (e) => {
+        $("#chat-message").off("keydown.original");
+        $("#chat-message").on("keydown.menufocus", (e) => {
           if (e.which === 38) { // `up`
-            if($(e.target).is("#chat-message")) {
-              $("#whisper-menu li:last-child").focus();
-              return false;
-            } else if ($(e.target).is("#whisper-menu li")) {
-              if ($(e.target).is(":first-child")) {
-                $("#chat-message").focus();
-              } else {
-                $(e.target).prev().focus();
-              }
-              return false;
-            }
+            $("#whisper-menu li:last-child").focus();
+            return false;
           } else if (e.which === 40) { // `down`
-            if($(e.target).is("#chat-message")) {
-              $("#whisper-menu li:first-child").focus();
-              return false;
-            }
-            if($(e.target).is("#whisper-menu li")) {
-              if ($(e.target).is(":last-child")) {
-                $("#chat-message").focus();
-              } else {
-                $(e.target).next().focus();
-              }
-              return false;
-            }
-          } else if (e.which === 13) { // `enter`
-            if($(e.target).is("#whisper-menu li")) {
-              menuItemSelectionHandler(e);
-              return false;
-            }
+            $("#whisper-menu li:first-child").focus();
+            return false;
           }
         });
       } else {
@@ -145,11 +129,37 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
     if (e.which == 221) { // `]`
       let val = $("#chat-message").val();
       if (val.match(listOfNamesRegex)) {
+        console.log("listOfNamesRegex matched");
         if (typeof e === "object") e.preventDefault();
         val = val.trim();
         const newval = val.substring(val.length - 1) === "," ? val.substring(0, val.length - 1) : val; // remove `,` from the end
         $("#chat-message").val(newval + "] ");
         closeWhisperMenu();
+      } else {
+        console.log("listOfNamesRegex NOT matched");
+      }
+    }
+  }
+
+  function menuNavigationHandler(e) {
+    if ($(e.target).is("li.context-item")) {
+      if (e.which === 38) { // `up`
+        if ($(e.target).is(":first-child")) {
+          $("#chat-message").focus();
+        } else {
+          $(e.target).prev().focus();
+        }
+        return false;
+      } else if (e.which === 40) { // `down`
+        if ($(e.target).is(":last-child")) {
+          $("#chat-message").focus();
+        } else {
+          $(e.target).next().focus();
+        }
+        return false;
+      } else if (e.which === 13) { // `enter`
+        menuItemSelectionHandler(e);
+        return false;
       }
     }
   }
@@ -246,7 +256,8 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   function closeWhisperMenu() {
     $("#whisper-menu").empty();
     $(window).off("click.outsidewhispermenu");
-    $(window).off("keydown.menufocus");
+    $("#chat-message").off("keydown.menufocus keydown.original");
+    $("#chat-message").on("keydown.original", ui.chat._onChatKeyDown.bind(ui.chat));
     resetGhostText();
   }
 
