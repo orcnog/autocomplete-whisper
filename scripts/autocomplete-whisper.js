@@ -42,14 +42,13 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   const $ghostTextarea = $('<textarea class="chatghosttextarea" autocomplete="off" readonly disabled></textarea>');
   let $whisperMenu = $('<nav id="context-menu" class="expand-up"><ol class="context-items"></ol></nav>');
 
-
-  /* Rebind original FVTT chat textarea keydown handler with namespace */
-  $("#chat-message").off("keydown");
-  $("#chat-message").on("keydown.original", ui.chat._onChatKeyDown.bind(ui.chat));
-
   /* Add our UI to the DOM */
   $("#chat-message").before($whisperMenuContainer);
   $("#chat-message").after($ghostTextarea);
+
+  /* Unbind original FVTT chat textarea keydown handler and implemnt our own to catch up/down keys first */
+  $("#chat-message").off("keydown");
+  $("#chat-message").on("keydown.menufocus", jumpToMenuHandler);
   /* Listen for chat input. Do stuff.*/
   $("#chat-message").on("input.whisperer", handleChatInput);
   /* Listen for "]" to close an array of targets (names) */
@@ -105,20 +104,6 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
             closeWhisperMenu();
           }
         });
-           
-        // set up up/down arrow handlers to allow user to focus and select menu items
-        $("#chat-message").off("keydown.original");
-        $("#chat-message").on("keydown.menufocus", (e) => {
-          if (e.which === 38) { // `up`
-            $("#whisper-menu li:last-child").focus();
-            return false;
-          } else if (e.which === 40) { // `down`
-            $("#whisper-menu li:first-child").focus();
-            return false;
-          } else {
-            ui.chat._onChatKeyDown(e);
-          }
-        });
       } else {
         closeWhisperMenu();
       }
@@ -138,6 +123,20 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
         closeWhisperMenu();
       }
     }
+  }
+
+  function jumpToMenuHandler(e) {
+    if ($("#whisper-menu").find("li").length) {
+      if (e.which === 38) { // `up`
+        $("#whisper-menu li:last-child").focus();
+        return false;
+      } else if (e.which === 40) { // `down`
+        $("#whisper-menu li:first-child").focus();
+        return false;
+      }
+    }
+    // if player menu is not visible/DNE, execute FVTT's original keydown handler
+    ui.chat._onChatKeyDown(e);
   }
 
   function menuNavigationHandler(e) {
@@ -255,8 +254,6 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
   function closeWhisperMenu() {
     $("#whisper-menu").empty();
     $(window).off("click.outsidewhispermenu");
-    $("#chat-message").off("keydown.menufocus keydown.original");
-    $("#chat-message").on("keydown.original", ui.chat._onChatKeyDown.bind(ui.chat));
     resetGhostText();
   }
 
