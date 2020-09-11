@@ -44,11 +44,16 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
 
   /* Add our UI to the DOM */
   $("#chat-message").after($ghostTextarea);
-  $("#chat-message").after($whisperMenuContainer);
+
+  /* Unbind original FVTT chat textarea keydown handler and implemnt our own to catch up/down keys first */
+  $("#chat-message").off("keydown");
+  $("#chat-message").on("keydown.menufocus", jumpToMenuHandler);
   /* Listen for chat input. Do stuff.*/
   $("#chat-message").on("input.whisperer", handleChatInput);
   /* Listen for "]" to close an array of targets (names) */
   $("#chat-message").on("keydown.closearray", listFinishHandler);
+  /* Listen for up/down arrow presses to navigate exposed menu */
+  $("#whisper-menu").on("keydown.menufocus", menuNavigationHandler);
   /* Listen for click on a menu item */
   $("#whisper-menu").on("click", "li", menuItemClickHandler);
 
@@ -115,7 +120,44 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
     }
   }
 
-  function menuItemClickHandler(e) {
+  function jumpToMenuHandler(e) {
+    if ($("#whisper-menu").find("li").length) {
+      if (e.which === 38) { // `up`
+        $("#whisper-menu li:last-child").focus();
+        return false;
+      } else if (e.which === 40) { // `down`
+        $("#whisper-menu li:first-child").focus();
+        return false;
+      }
+    }
+    // if player menu is not visible/DNE, execute FVTT's original keydown handler
+    ui.chat._onChatKeyDown(e);
+  }
+
+  function menuNavigationHandler(e) {
+    if ($(e.target).is("li.context-item")) {
+      if (e.which === 38) { // `up`
+        if ($(e.target).is(":first-child")) {
+          $("#chat-message").focus();
+        } else {
+          $(e.target).prev().focus();
+        }
+        return false;
+      } else if (e.which === 40) { // `down`
+        if ($(e.target).is(":last-child")) {
+          $("#chat-message").focus();
+        } else {
+          $(e.target).next().focus();
+        }
+        return false;
+      } else if (e.which === 13) { // `enter`
+        menuItemSelectionHandler(e);
+        return false;
+      }
+    }
+  }
+
+  function menuItemSelectionHandler(e) {
     e.stopPropagation();
     var autocompleteText = autocomplete($(this).text());
     $("#chat-message").val(autocompleteText.overwrite);
