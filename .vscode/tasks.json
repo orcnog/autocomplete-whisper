@@ -1,0 +1,25 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "zip",
+            "type": "shell",
+            "command": "7z a -tzip download/autocomplete-whisper.${input:ver}.zip scripts styles module.json",
+            "presentation": {
+                "panel": "dedicated",
+                "showReuseMessage": false
+            },
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "ver",
+            "description": "Enter Version Number: ",
+            "default": "0.x.x",
+            "type": "promptString"
+        }
+    ]
+}
