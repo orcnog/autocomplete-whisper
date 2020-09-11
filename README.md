@@ -24,5 +24,5 @@ Fixes issue #11, if "Players" targeted in array the menu now hides all indiv pla
 
 #### v0.2.0
 Navigate up/down the player menu with the arrow keys
-* Now, when yo type `/w ` and the player menu pops up, you can press the [up] or [down] key to traverse the context menu, and press [enter] to make a selection.  Great care was taken to allow the original keydown handler to continue to function correctly.
+* Now, when you type `/w ` and the player menu pops up, you can press the [up] or [down] key to traverse the context menu, and press [enter] to make a selection.  Great care was taken to allow the original keydown handler to continue to function correctly.
 * Compatibility Note: this unbinds and rewrite the original FVTT keydown handler for chat textarea. The new handler is namespaced as `keydown.menufocus`.
