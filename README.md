@@ -7,7 +7,7 @@ Foundry VTT module to enhance chat whisper targeting with typeahead suggestions 
 * Supports group whisper syntaxes: "@\[target1, target2\]", "/w \[target1, target2\]" etc.
 
 ### Demo
-[![Demo of autocomplete-whisper module](demo.gif)](https://youtu.be/gMwCbr0dBUY)
+![Demo of autocomplete-whisper module](demo.gif)
 
 ### Release Notes
 

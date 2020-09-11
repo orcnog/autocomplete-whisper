@@ -1,5 +1,5 @@
 #chat-form {
-	position: relative;
+  position: relative;
 }
 
 #chat-form .chatghosttextarea {
@@ -13,6 +13,14 @@
   pointer-events: none;
   background: transparent;
 }
+
 .chatghosttextarea:not(.show) {
-	display: none;
+  display: none;
+}
+
+/* adds focus styling for context menu LIs */
+
+#context-menu li.context-item:focus {
+  outline: none;
+  box-shadow: 0 0 10px #ff6400, inset 0px 0px 0px 1px red;
 }
