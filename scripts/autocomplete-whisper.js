@@ -131,14 +131,11 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
     if (e.which == 221) { // `]`
       let val = $("#chat-message").val();
       if (val.match(listOfNamesRegex)) {
-        console.log("listOfNamesRegex matched");
         if (typeof e === "object") e.preventDefault();
         val = val.trim();
         const newval = val.substring(val.length - 1) === "," ? val.substring(0, val.length - 1) : val; // remove `,` from the end
         $("#chat-message").val(newval + "] ");
         closeWhisperMenu();
-      } else {
-        console.log("listOfNamesRegex NOT matched");
       }
     }
   }
