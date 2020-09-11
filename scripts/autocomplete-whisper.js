@@ -115,6 +115,8 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
           } else if (e.which === 40) { // `down`
             $("#whisper-menu li:first-child").focus();
             return false;
+          } else {
+            ui.chat._onChatKeyDown(e);
           }
         });
       } else {
