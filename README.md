@@ -28,3 +28,8 @@ Navigate up/down the player menu with the arrow keys!
 * Compatibility Note: this unbinds and rewrite the original FVTT keydown handler for chat textarea. The new handler is namespaced as `keydown.menufocus`.
 * Arrow Keys Demo:  
 ![Demo of autocomplete-whisper module](demo/arrow-keys-demo.gif)
+
+#### v0.3.0
+Removes support for '@' syntax
+* The whisper syntax of `@username ` has been deprecated in Foundry v0.7.X, so regex detection of this whisper syntax has now been removed from the module.
+* A settings option has been added: You can now control whether a list of GM usernames (i.e. actual names af users assigned a Gamemaster role) appears in the pop-up menu of selectable whisper targets.  The default value is false, and this will probably only apply rarely -- only for games in which there are multiple users with the GM role, and a player wishes to be able to whisper to one, but not all of them.
