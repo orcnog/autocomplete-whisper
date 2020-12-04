@@ -36,3 +36,6 @@ Removes support for '@' syntax
 
 #### v0.3.1
 Updated latest tested compatible version number to remove that pesky "compatibility risk" tag in setup.
+
+#### v0.3.2
+Updated latest tested compatible version number to remove that pesky "compatibility risk" tag in setup.
