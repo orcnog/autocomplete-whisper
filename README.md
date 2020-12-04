@@ -33,3 +33,6 @@ Navigate up/down the player menu with the arrow keys!
 Removes support for '@' syntax
 * The whisper syntax of `@username ` has been deprecated in Foundry v0.7.X, so regex detection of this whisper syntax has now been removed from the module.
 * A settings option has been added: You can now control whether a list of GM usernames (i.e. actual names af users assigned a Gamemaster role) appears in the pop-up menu of selectable whisper targets.  The default value is false, and this will probably only apply rarely -- only for games in which there are multiple users with the GM role, and a player wishes to be able to whisper to one, but not all of them.
+
+#### v0.3.1
+Updated latest tested compatible version number to remove that pesky "compatibility risk" tag in setup.
