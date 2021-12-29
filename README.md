@@ -41,3 +41,6 @@ Updated latest tested compatible version number to remove that pesky "compatibil
 Updated latest tested compatible version number to remove that pesky "compatibility risk" tag in setup.
 #### v0.3.3
 Updated latest tested compatible version number to remove that pesky "compatibility risk" tag in setup. Sigh.
+
+#### v0.3.4
+Added support for Foundry V9.

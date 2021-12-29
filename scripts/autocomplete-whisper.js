@@ -76,7 +76,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
             let input = splt[splt.length - 1]; // newly typed input
             let alreadyTargeted = getAlreadyTargeted(splt[targetsInArrayIndex]);
             const includeGMNamesInList = game.settings.get('autocomplete-whisper', 'includeGMNamesInList');
-            const activePlayers = game.users.entities.filter(p => (includeGMNamesInList || !p.isGM) && p.name);
+            const activePlayers = Array.from(game.users).filter(p => (includeGMNamesInList || !p.isGM) && p.name);
             let whisperablePlayers = activePlayers.map((p) => p.name);
             whisperablePlayers.push(PLAYERS);
             whisperablePlayers.push(GM[0]);
@@ -189,11 +189,11 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
             arr.pop();
             arr = arr.map(n => n.trim());
             if (arr.indexOf(PLAYERS.toUpperCase()) >= 0) {
-                let allPlayers = game.users.entities.filter(u => !u.isGM).map((p) => p.name.toUpperCase());
+                let allPlayers = Array.from(game.users).filter(u => !u.isGM).map((p) => p.name.toUpperCase());
                 arr = arr.concat(allPlayers);
             }
             if (arr.indexOf(GM[0].toUpperCase()) >= 0 || arr.indexOf(GM[1].toUpperCase()) >= 0) {
-                let allGMs = game.users.entities.filter(u => u.isGM).map((p) => p.name.toUpperCase());
+                let allGMs = Array.from(game.users).filter(u => u.isGM).map((p) => p.name.toUpperCase());
                 arr = arr.concat(allGMs, GM);
             }
             // console.log(arr);
