@@ -20,7 +20,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
     // /w ' or '/whisper ' or '/wHiSpEr ' (case-insensitive)
     //
     // Note: i'm using '/w' to represent any of the above syntaxes (like '/whisper') from here on in this comment.
-    // '/w [' (match the start of an Arrays of targets)
+    // '/w [' (match the start of an Array of targets)
     //
     // '/w [someName,' (an array with any name(s) followed by a comma)
     //
