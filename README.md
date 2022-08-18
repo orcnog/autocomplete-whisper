@@ -41,5 +41,11 @@ Updated latest tested compatible version number to remove that pesky "compatibil
 Updated latest tested compatible version number to remove that pesky "compatibility risk" tag in setup.
 #### v0.3.3
 Updated latest tested compatible version number to remove that pesky "compatibility risk" tag in setup. Sigh.
+<<<<<<< HEAD
 #### v1.0.0
 Updated the compatible version to get this module out of an archived status! Yikes. Also updated one misspelled word in a js comment. Calling a spade a spade: this shuold have been at a version 1 a while ago.
+=======
+
+#### v0.3.4
+Added support for Foundry V9.
+>>>>>>> 8fbcee45620bffced8c7eea15956850f74d15a0e
