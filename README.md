@@ -47,3 +47,6 @@ Added support for Foundry V9.
 
 #### v1.0.0
 Updated the compatible version to get this module out of an archived status! Yikes. Also updated one misspelled word in a js comment. Calling a spade a spade: this shuold have been at a version 1 a while ago.
+
+#### v1.0.1
+v10 Compatible. Updated latest tested compatible version number to keep this from being automatically uninstalled on world migration.
