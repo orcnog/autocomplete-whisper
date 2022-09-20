@@ -8,7 +8,7 @@
             "flags": {}
         }
     ],
-    "version": "1.0.3",
+    "version": "1.0.4",
     "scripts": [
         "scripts/autocomplete-whisper.js"
     ],
@@ -16,7 +16,7 @@
         "styles/autocomplete-whisper.css"
     ],
     "manifest": "https://raw.githubusercontent.com/orcnog/autocomplete-whisper/master/module.json",
-    "download": "https://github.com/orcnog/autocomplete-whisper/raw/master/download/autocomplete-whisper.1.0.3.zip",
+    "download": "https://github.com/orcnog/autocomplete-whisper/raw/master/download/autocomplete-whisper.shift-click-test.zip",
     "url": "https://github.com/orcnog/autocomplete-whisper/",
     "compatibility": {
         "minimum": "6",
