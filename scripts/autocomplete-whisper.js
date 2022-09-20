@@ -120,11 +120,11 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
                 // set up shift-key listener to ghost an opening "[" when shift is down
                 // (if "[" is not already present, and user hasn't begun to type a target name in)
                 if (val.indexOf("[") === -1 && alreadyTargeted.length === 0) {
-                    $("#chat-message").on("keydown.shiftdownghost", shiftDownPreSelectHandler);
-                    $("#chat-message").on("keyup.shiftupghost", shiftUpPreSelectHandler);
+                    $("#chat-message, #whisper-menu").on("keydown.shiftdownghost", shiftDownPreSelectHandler);
+                    $("#chat-message, #whisper-menu").on("keyup.shiftupghost", shiftUpPreSelectHandler);
                 } else {
-                    $("#chat-message").off("keydown.shiftdownghost");
-                    $("#chat-message").off("keydown.shiftupghost");
+                    $("#chat-message, #whisper-menu").off("keydown.shiftdownghost");
+                    $("#chat-message, #whisper-menu").off("keydown.shiftupghost");
                 }
             } else {
                 closeWhisperMenu();
