@@ -15,8 +15,8 @@
     "styles": [
         "styles/autocomplete-whisper.css"
     ],
-    "manifest": "https://raw.githubusercontent.com/orcnog/autocomplete-whisper/master/module.json",
-    "download": "https://github.com/orcnog/autocomplete-whisper/raw/master/download/autocomplete-whisper.shift-click-test.zip",
+    "manifest": "https://raw.githubusercontent.com/orcnog/autocomplete-whisper/shift-click-v2/module.json",
+    "download": "https://github.com/orcnog/autocomplete-whisper/raw/shift-click-v2/download/autocomplete-whisper.shift-click-test.zip",
     "url": "https://github.com/orcnog/autocomplete-whisper/",
     "compatibility": {
         "minimum": "6",
