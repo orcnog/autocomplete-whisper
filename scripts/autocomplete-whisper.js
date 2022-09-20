@@ -33,7 +33,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
     //
     // Note: the Regex pattern below uses a Positive Lookbehind, (?<=\[), which may not be supported in obscure or old browsers.
     const whisperPattern = new RegExp(/^(\/w(?:hisper)?\s{1}(?:\[)?)((?<=\[)\s*(?:\s*[^,\]]+,\s*)*)?(?!.*\])/, "i");
-    // when the above regex pattern is used in a split(), define the parts' by array index...
+    // when the above regex pattern is used in a split(), define the parts by array index...
     const whisperSyntaxIndex = 1;
     const targetsInArrayIndex = 2;
 
@@ -59,7 +59,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
     /* Listen for chat input. Do stuff.*/
     $("#chat-message").on("input.whisperer", handleChatInput);
     /* Listen for "]" to close an array of targets (names) */
-    $("#chat-message").on("keydown.closearray", listFinishHandler);
+    $("#chat-message").on("keydown.closearray", closeArrayHandler);
     /* Listen for up/down arrow presses to navigate exposed menu */
     $("#whisper-menu").on("keydown.menufocus", menuNavigationHandler);
     /* Listen for click on a menu item */
@@ -71,6 +71,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
         if (val.match(whisperPattern)) {
 
             // It's a whisper! Show a menu of whisper targets and typeahead text if possible
+
             let splt = val.split(whisperPattern);
             // console.log(splt);
             let input = splt[splt.length - 1]; // newly typed input
@@ -90,6 +91,8 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
                 // At least one potential target exists.
                 // show ghost text to autocomplete if there's a match starting with the characters already typed
                 ghostText(input, matchingPlayers);
+
+                // Menu
                 // set up and display the menu of whisperable names
                 let listOfPlayers = "";
                 for (let p in matchingPlayers) {
@@ -109,9 +112,20 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
                 $(window).on("click.outsidewhispermenu", (e) => {
                     var $target = $(e.target);
                     if (!$target.closest("#whisper-menu").length) {
+                        closeArrayHandler(e);
                         closeWhisperMenu();
                     }
                 });
+
+                // set up shift-key listener to ghost an opening "[" when shift is down
+                // (if "[" is not already present, and user hasn't begun to type a target name in)
+                if (val.indexOf("[") === -1 && alreadyTargeted.length === 0) {
+                    $("#chat-message").on("keydown.shiftdownghost", shiftDownPreSelectHandler);
+                    $("#chat-message").on("keyup.shiftupghost", shiftUpPreSelectHandler);
+                } else {
+                    $("#chat-message").off("keydown.shiftdownghost");
+                    $("#chat-message").off("keydown.shiftupghost");
+                }
             } else {
                 closeWhisperMenu();
             }
@@ -120,8 +134,8 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
         }
     }
 
-    function listFinishHandler(e) {
-        if (e.which == 221) { // `]`
+    function closeArrayHandler(e) {
+        if (e.which == 221 || e.type == 'click') { // character typed is `]`, or it's a mouse click
             let val = $("#chat-message").val();
             if (val.match(listOfNamesRegex)) {
                 if (typeof e === "object") e.preventDefault();
@@ -145,6 +159,19 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
         }
         // if player menu is not visible/DNE, execute FVTT's original keydown handler
         ui.chat._onChatKeyDown(e);
+    }
+
+    function shiftDownPreSelectHandler(e) {
+        if (e.which === 16) { // shift key (left or right) is depressed
+            $(".chatghosttextarea").val($("#chat-message").val().trim() + " [");
+            $(".chatghosttextarea").addClass("show");
+        }
+    }
+
+    function shiftUpPreSelectHandler(e) {
+        if (e.which === 16) { // shift key (left or right) was released
+            $(".chatghosttextarea").removeClass("show");
+        }
     }
 
     function menuNavigationHandler(e) {
@@ -172,7 +199,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
 
     function menuItemSelectionHandler(e) {
         e.stopPropagation();
-        var autocompleteText = autocomplete($(e.target).text());
+        var autocompleteText = autocomplete($(e.target).text(), e.shiftKey);
         $("#chat-message").val(autocompleteText.overwrite);
         $("#chat-message").focus();
         closeWhisperMenu();
@@ -229,7 +256,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
         }
     }
 
-    function autocomplete(match) {
+    function autocomplete(match, isShiftSelected) {
         if (!match) return;
         const arr = $("#chat-message").val().split(whisperPattern);
         let startingSyntax = arr[whisperSyntaxIndex];
@@ -246,11 +273,16 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
         // add a `, ` if this is an array of targets
         let charactersAfter = isArrayOfTargets ? ", " : " ";
         const ghostString = startingSyntax + targetsAlreadyInArray + nameToAdd + charactersAfter;
-        // interesting quirk: if the whisper target has a space in it, the whisper syntax only works if the target nam
+        // if this is a shift-selection and bracket syntax has't already been implemented in the input area, start it now
+        if (isShiftSelected && startingSyntax.indexOf("[") == -1) {
+            startingSyntax += "[";
+            charactersAfter = ", ";
+        }
+        // interesting quirk: if the whisper target has a space in it, the whisper syntax only works if the target name
         // is wrapped in []. *shrug* makes sense.
         if (nameToAdd.indexOf(" ") > -1 && !isArrayOfTargets) {
             startingSyntax += "[";
-            charactersAfter = "] "; // go ahead and close the array now, since the user probably only intended one target.
+            charactersAfter = "] "; // go ahead and append the closing-bracket to the array now
         }
         const retypeWrappedInBrackets = startingSyntax + targetsAlreadyInArray + nameToAdd + charactersAfter;
         return ({
