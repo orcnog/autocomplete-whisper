@@ -300,5 +300,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
     function resetGhostText() {
         $("#chat-message").off("keydown.ghosttab");
         $(".chatghosttextarea").val("").removeClass("show");
+        $("#chat-message, #whisper-menu").off("keydown.shiftdownghost");
+        $("#chat-message, #whisper-menu").off("keydown.shiftupghost");
     }
 });
