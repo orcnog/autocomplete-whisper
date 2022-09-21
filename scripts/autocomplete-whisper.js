@@ -53,17 +53,27 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
     $("#chat-message").before($whisperMenuContainer);
     $("#chat-message").after($ghostTextarea);
 
-    /* Unbind original FVTT chat textarea keydown handler and implemnt our own to catch up/down keys first */
-    $("#chat-message").off("keydown");
-    $("#chat-message").on("keydown.menufocus", jumpToMenuHandler);
-    /* Listen for chat input. Do stuff.*/
-    $("#chat-message").on("input.whisperer", handleChatInput);
+    /* Listen for up/down keys from inside the chat textarea. Overrule default FVTT keydown handler. */
+    onFirst($("#chat-message"), "keydown.menufocus", jumpToMenuHandler);
     /* Listen for "]" to close an array of targets (names) */
     $("#chat-message").on("keydown.closearray", closeArrayHandler);
+    /* Listen for chat input. Do stuff.*/
+    $("#chat-message").on("input.whisperer", handleChatInput);
     /* Listen for up/down arrow presses to navigate exposed menu */
     $("#whisper-menu").on("keydown.menufocus", menuNavigationHandler);
     /* Listen for click on a menu item */
     $("#whisper-menu").on("click", "li", menuItemSelectionHandler);
+
+    /**
+     * Attach an event handler, and ensure that it executes first among the array of event handler functions.
+     */
+    function onFirst(element, eventName, selector, eventHandler) {
+        element.on(eventName, selector, eventHandler);
+    
+        let handlers = jQuery._data(element[0]).events[eventName.split('.')[0]];
+        handlers.unshift(handlers.pop()); // move last handler (the just-assigned eventHandler) to the front
+        return element;
+    }
 
     function handleChatInput() {
         resetGhostText();
@@ -156,9 +166,8 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
                 $("#whisper-menu li:first-child").focus();
                 return false;
             }
+            e.stopPropagation(); // do not allow FVTT's original keydown handler, or any other keydown handlers, to execute
         }
-        // if player menu is not visible/DNE, execute FVTT's original keydown handler
-        ui.chat._onChatKeyDown(e);
     }
 
     function shiftDownPreSelectHandler(e) {
