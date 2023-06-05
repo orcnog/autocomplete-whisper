@@ -54,3 +54,5 @@ v10 Compatible. Updated latest tested compatible version number to keep this fro
 v10 Compatible. Updated compatibility values in module.json, and removed incorrect dependancy on libwrapper because it is actually independent.
 #### v1.0.3
 v10 Compatible. Bugfix: updated the zip file to correctly contain the latest manifest file.
+#### v1.0.4
+v11 Compatible.
