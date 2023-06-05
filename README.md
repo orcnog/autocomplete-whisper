@@ -57,3 +57,5 @@ v10 Compatible. Updated compatibility values in module.json, and removed incorre
 v10 Compatible. Bugfix: updated the zip file to correctly contain the latest manifest file.
 #### v1.0.4
 Fixed the keydown binding incompatibility issues with other modules by using @DJ4ddi's solution (thank you!). Implements shift-click to multiselect in menu.
+#### v1.0.5
+Tested and found to be compatible with Foundry v11. No code changes.
