@@ -3,8 +3,8 @@ Foundry VTT module to enhance chat whisper targeting with typeahead suggestions 
 
 * Detects when whisper syntax is typed, and provides a popup menu of available whisper targets.
 * Provides typeahead suggestions as you type a target's name.  Pres TAB to autocomplete.
-* Supports all known whisper syntaxes: "/whisper", "/w ", and "@".
-* Supports group whisper syntaxes: "@\[target1, target2\]", "/w \[target1, target2\]" etc.
+* Supports both known whisper syntaxes: `/whisper`, and `/w`.
+* Supports group whisper syntax: `/w [target1, target2]`.
 * Shift-click a name in the menu to multiselect (new in v1.0.4)!
 
 ### Demo
@@ -59,3 +59,5 @@ v10 Compatible. Bugfix: updated the zip file to correctly contain the latest man
 Fixed the keydown binding incompatibility issues with other modules by using @DJ4ddi's solution (thank you!). Implements shift-click to multiselect in menu.
 #### v1.0.5
 Tested and found to be compatible with Foundry v11. No code changes.
+#### v1.0.6
+Tested and found to be compatible with Foundry v12. No code changes. But I did remove some `@`-specific notes from this README, as `@` syntax was deprecated a while ago.
