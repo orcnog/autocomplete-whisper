@@ -61,3 +61,5 @@ Fixed the keydown binding incompatibility issues with other modules by using @DJ
 Tested and found to be compatible with Foundry v11. No code changes.
 #### v1.0.6
 Tested and found to be compatible with Foundry v12. No code changes. But I did remove some `@`-specific notes from this README, as `@` syntax was deprecated a while ago.
+#### v1.0.7
+Makes the structure of modules.json compliant and stop throwing an error on install.

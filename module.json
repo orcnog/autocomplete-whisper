@@ -1,5 +1,5 @@
 {
-    "name": "autocomplete-whisper",
+    "id": "autocomplete-whisper",
     "title": "Autocomplete Whisper",
     "description": "Whisper quicker with typeahead autocomplete suggestions and a popup menu of whisper targets.",
     "authors": [
@@ -8,7 +8,7 @@
             "flags": {}
         }
     ],
-    "version": "1.0.6",
+    "version": "1.0.7",
     "scripts": [
         "scripts/autocomplete-whisper.js"
     ],
