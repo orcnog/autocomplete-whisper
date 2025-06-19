@@ -66,3 +66,6 @@ Makes the structure of modules.json compliant and stop throwing an error on inst
 
 #### v1.1.0
 Update package releases to use Git Releases. Automate the release process locally a bit.
+
+#### v2.0.0
+Upgrade to Foundry VTT v13 compatibility! Required an overhaul of several UI aspects.

@@ -1,6 +1,6 @@
 {
   "name": "autocomplete-whisper",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "A Foundry VTT module that lets you whisper quicker with typeahead autocomplete suggestions and a popup menu of whisper targets.",
   "main": "dist/scripts/autocomplete-whisper.js",
   "scripts": {
