@@ -1,1 +1,7 @@
-unused/*
+/unused
+*.lock
+node_modules
+/releases
+/archive
+mod.config
+myREADME.md
