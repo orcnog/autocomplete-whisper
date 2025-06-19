@@ -63,3 +63,6 @@ Tested and found to be compatible with Foundry v11. No code changes.
 Tested and found to be compatible with Foundry v12. No code changes. But I did remove some `@`-specific notes from this README, as `@` syntax was deprecated a while ago.
 #### v1.0.7
 Makes the structure of modules.json compliant and stop throwing an error on install.
+
+#### v1.1.0
+Update package releases to use Git Releases. Automate the release process locally a bit.
