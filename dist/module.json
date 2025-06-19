@@ -1,0 +1,25 @@
+{
+  "id": "autocomplete-whisper",
+  "title": "Autocomplete Whisper",
+  "description": "Whisper quicker with typeahead autocomplete suggestions and a popup menu of whisper targets.",
+  "authors": [
+    {
+      "name": "orcnog",
+      "flags": {}
+    }
+  ],
+  "version": "1.1.0",
+  "scripts": [
+    "scripts/autocomplete-whisper.js"
+  ],
+  "styles": [
+    "styles/autocomplete-whisper.css"
+  ],
+  "url": "https://github.com/orcnog/autocomplete-whisper/",
+  "manifest": "https://github.com/orcnog/autocomplete-whisper/releases/download/v1.1.0/module.json",
+  "download": "https://github.com/orcnog/autocomplete-whisper/releases/download/v1.1.0/autocomplete-whisper-v1.1.0.zip",
+  "compatibility": {
+    "minimum": "6",
+    "verified": "12"
+  }
+}
