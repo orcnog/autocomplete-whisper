@@ -2,20 +2,27 @@ const archiver = require('archiver');
 const fs = require('fs');
 const readlineSync = require('readline-sync');
 const path = require('path');
-const { parse } = require('jsonc-parser');
+require('dotenv').config({ path: '.env.local' });
 
-// Read and parse the mod.config file
-const modConfigPath = 'mod.config';
-const modConfigContent = fs.readFileSync(modConfigPath, 'utf8');
-const modConfig = parse(modConfigContent);
+// Helper to get required env variable or throw
+function getEnv(key) {
+  const value = process.env[key];
+  if (!value) throw new Error(`Missing required environment variable: ${key}`);
+  return value;
+}
+
+// Read paths from .env.local (no fallback)
+const moduleJsonPath = getEnv('MODULE_JSON_PATH');
+const packageJsonPath = getEnv('PACKAGE_JSON_PATH');
+const distPath = getEnv('DIST_PATH');
+const releasesPath = getEnv('RELEASES_PATH');
+const readmePath = getEnv('README_PATH');
 
 // Read and parse the module.json file
-const moduleJsonPath = path.join(modConfig.distPath, 'module.json');
-const moduleJson = parse(fs.readFileSync(moduleJsonPath, 'utf8'));
+const moduleJson = JSON.parse(fs.readFileSync(moduleJsonPath, 'utf8'));
 
 // Read and parse the package.json file
-const packageJsonPath = modConfig.packageJsonPath;
-const packageJson = parse(fs.readFileSync(packageJsonPath, 'utf8'));
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
 // Get the current module ID from module.json
 const moduleId = moduleJson.id;
@@ -34,48 +41,49 @@ console.log(`Release received - Release Notes: ${releaseNotes}`);
 // Update the version number in module.json
 const updatedModuleJson = JSON.stringify(moduleJson, null, 2).replace(new RegExp(currentVersion, 'g'), newVersion);
 fs.writeFileSync(moduleJsonPath, updatedModuleJson);
-console.log(`module.json updated successfully!`);
+console.log(`${moduleJsonPath} updated successfully!`);
 
 // Update the version number in package.json
 packageJson.version = newVersion;
 fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-console.log(`package.json updated successfully!`);
+console.log(`${packageJsonPath} updated successfully!`);
 
-const outputDir = modConfig.releasesPath + `/v${newVersion}`;
 const zipFileName = `${moduleId}-v${newVersion}.zip`;
+const outputDir = releasesPath;
 
-// Check if directory exists. If not, create it.
+// Ensure releases directory exists
 if (!fs.existsSync(outputDir)){
-    fs.mkdirSync(outputDir, { recursive: true });  // recursive ensures any nested directories are created
+    fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// Copy the updated module.json to the zip_releases folder
-const updatedModuleJsonPath = path.join(outputDir, 'module.json');
-fs.copyFileSync(moduleJsonPath, updatedModuleJsonPath);
-console.log(`Updated module.json copied to ${updatedModuleJsonPath}`);
-
 // Create a new output stream for the zip file
-const output = fs.createWriteStream(`${outputDir}/${zipFileName}`);
+const output = fs.createWriteStream(path.join(outputDir, zipFileName));
 const archive = archiver('zip');
 
 // Pipe the output stream to the archive
 archive.pipe(output);
 
 // Append the entire "dist" folder to the archive
-archive.directory(modConfig.distPath, false);
+archive.directory(distPath, false);
 
 // Finalize the archive and close the output stream
 archive.finalize();
 
 // Listen for the "close" event to know when the archive has been created
 output.on('close', () => {
-  console.log(`./${outputDir}/${zipFileName} created successfully!`);
+  console.log(`${path.join(outputDir, zipFileName)} created successfully!`);
 
-  // Update the README.md file with the release notes (if provided)
+  // Prompt before updating the README.md file with the release notes (if provided)
   if (releaseNotes !== '') {
-    const readmePath = modConfig.readmePath;
-    fs.appendFileSync(readmePath, `\n\n#### v${newVersion}\n${releaseNotes}`);
-    console.log(`${readmePath} updated successfully with release notes!`);
+    const updateReadme = readlineSync.keyInYNStrict(
+      `\x1b[33mDo you want to append these release notes to ${readmePath}?\x1b[0m`
+    );
+    if (updateReadme) {
+      fs.appendFileSync(readmePath, `\n\n## v${newVersion}\n${releaseNotes}`);
+      console.log(`${readmePath} updated successfully with release notes!`);
+    } else {
+      console.log('Skipped updating README.md with release notes.');
+    }
   }
 });
 
