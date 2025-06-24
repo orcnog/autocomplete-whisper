@@ -8,15 +8,25 @@ load_dotenv(dotenv_path='.env.local')
 
 def make_archive_without_excluded_folder(source_folder, archive_name, exclude_folder=None):
     """Create a zip archive excluding a specific folder."""
+    os.makedirs(os.path.dirname(archive_name), exist_ok=True)  # Ensure parent dirs exist
+
+    if args.verbose:
+        print(f"About to create archive: {archive_name} from {source_folder}, excluding folder: {exclude_folder if exclude_folder else 'None'}")
+
     with zipfile.ZipFile(archive_name, 'w', zipfile.ZIP_DEFLATED) as archive:
         try:
+            print("Did we make it this far?")
             for root, dirs, files in os.walk(source_folder):
                 # Skip the excluded folder and its subdirectories if specified
                 if exclude_folder and exclude_folder in dirs:
+                    if args.verbose:
+                        print(f"Skipping excluded folder: {exclude_folder}")
                     dirs.remove(exclude_folder)
                 for file in files:
                     file_path = os.path.join(root, file)
                     archive_path = os.path.relpath(file_path, source_folder)
+                    if args.verbose:
+                        print(f"writing file: {file_path} as {archive_path}...")
                     archive.write(file_path, archive_path)
         except PermissionError as e:
             print(f"\033[91m[Permission Denied] Are you running Foundry VTT right now?\033[0m")
@@ -30,10 +40,7 @@ try:
     parser.add_argument("--server", type=str, help="Specify the server version (e.g., v12.343)")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
     args = parser.parse_args()
-
-    # Get the current folder and module name
-    current_folder = os.path.dirname(os.path.abspath(__file__))
-    module_name = os.path.basename(current_folder)
+    module_name = os.getenv('MODULE_NAME')
 
     # Get the target folder to update
     target_folder = os.path.join(os.getenv('FOUNDRY_DATA_PATH_BACKSLASHES'), "Data", "modules", module_name)
@@ -50,20 +57,17 @@ try:
     # Archive (zip) the current target folder
     if not args.no_archive:
         archive_target = os.getenv('ARCHIVE_TARGET_PATH')
-        if not archive_target:
-            archive_target = os.path.join(current_folder, "archive", "foundry-modules_folder-archive", module_name + "-" + time.strftime("%Y-%m-%d--%H.%M.%S") + ".zip")
-        else:
-            archive_target = archive_target.format(
-                module_name=module_name,
-                timestamp=time.strftime("%Y-%m-%d--%H.%M.%S")
-            )
+        archive_target = archive_target.format(
+            module_name=module_name,
+            timestamp=time.strftime("%Y-%m-%d--%H.%M.%S")
+        )
         if args.verbose:
             print(f"Archiving {target_folder} to {archive_target} ...")
         make_archive_without_excluded_folder(target_folder, archive_target, "packs" if args.no_packs else None)
         print(f"Archived {target_folder} to {archive_target}.")
 
     # Update the target folder with the contents of the current dist folder
-    dist_folder = os.path.join(current_folder, "dist")
+    dist_folder = os.getenv('DIST_PATH')
     if args.verbose:
         print(f"Dist folder resolved to: {dist_folder}")
 

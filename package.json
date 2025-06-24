@@ -3,12 +3,7 @@
   "version": "2.0.0",
   "description": "A Foundry VTT module that lets you whisper quicker with typeahead autocomplete suggestions and a popup menu of whisper targets.",
   "main": "dist/scripts/autocomplete-whisper.js",
-  "scripts": {
-    "test": "python playtest.py",
-    "playtest": "npm run test",
-    "ver": "node versionbump.js",
-    "version": "npm run ver"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/orcnog/autocomplete-whisper.git"
