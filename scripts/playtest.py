@@ -8,14 +8,11 @@ load_dotenv(dotenv_path='.env.local')
 
 def make_archive_without_excluded_folder(source_folder, archive_name, exclude_folder=None):
     """Create a zip archive excluding a specific folder."""
-    os.makedirs(os.path.dirname(archive_name), exist_ok=True)  # Ensure parent dirs exist
-
     if args.verbose:
         print(f"About to create archive: {archive_name} from {source_folder}, excluding folder: {exclude_folder if exclude_folder else 'None'}")
 
     with zipfile.ZipFile(archive_name, 'w', zipfile.ZIP_DEFLATED) as archive:
         try:
-            print("Did we make it this far?")
             for root, dirs, files in os.walk(source_folder):
                 # Skip the excluded folder and its subdirectories if specified
                 if exclude_folder and exclude_folder in dirs:
@@ -61,8 +58,6 @@ try:
             module_name=module_name,
             timestamp=time.strftime("%Y-%m-%d--%H.%M.%S")
         )
-        if args.verbose:
-            print(f"Archiving {target_folder} to {archive_target} ...")
         make_archive_without_excluded_folder(target_folder, archive_target, "packs" if args.no_packs else None)
         print(f"Archived {target_folder} to {archive_target}.")
 
